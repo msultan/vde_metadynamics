@@ -1,0 +1,7 @@
+numpy
+scipy
+pandas
+msmbuilder
+mdtraj
+msmbuilder
+vde

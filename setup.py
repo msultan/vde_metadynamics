@@ -11,10 +11,10 @@ setup(
     version="0.1",
     include_dirs=[numpy.get_include()],
     zip_safe=False,
-    packages=['vde_metadynamics', 'tests'],
+    packages=['vde_metadynamics'],
     author="Mohammad M. Sultan",
     author_email="msultan at stanford dot edu",
-    description=("Useful scripts for simulating vdes using metadynamics"),
+    description=("Useful scripts for writing VDEs into Plumed"),
     long_description=read('README.md'),
 )
 

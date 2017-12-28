@@ -37,7 +37,7 @@ def create_rmsd_label(loc, label):
 
 
 
-def create_feature(argument, func, label, feature_mean=None, feature_scale=None):
+def create_feature(argument, func, label, feature_mean=None, feature_scale=None, offset=None,**kwargs):
     arg = argument
     # if feature_scale is not None and feature_mean is not None:
     #     x = "((x-%s)/%s)"%(feature_mean, feature_scale)
@@ -71,6 +71,8 @@ def create_feature(argument, func, label, feature_mean=None, feature_scale=None)
     else:
         raise ValueError("Can't find function")
 
+    if offset is not None:
+        f += "-%s"%offset
 
     return plumed_matheval_template.render(arg=arg, func=f,\
                                            label=label,periodic="NO")
@@ -143,13 +145,15 @@ def render_atomic_feats(df,inds):
 
     return ''.join(output)
 
-def render_df(df,nrm = None):
+def render_df(df, nrm = None, inds=None, tica_mdl=None, output_label_prefix="f"):
     output = []
 
     if not set(df.featurizer).issubset(set(_SUPPORTED_FEATS)):
         raise ValueError("Sorry only contact, landmark, and dihedral featuizers\
                          are supported for now")
-    inds = range(len(df))
+
+    if inds is None:
+        inds = range(len(df))
     raw_feats = render_atomic_feats(df, inds)
     output.append(raw_feats)
 
@@ -160,7 +164,7 @@ def render_df(df,nrm = None):
         resids = j[1]["resids"]
         feat = j[1]["featuregroup"]
 
-        label = "l0_%d"%feature_index
+        label = "%s0_%d"%(output_label_prefix, feature_index)
 
         func = get_feature_transform(df, feature_index,)
         if df.featurizer[feature_index] == "Contact" and len(df.atominds[feature_index][0])>1:
@@ -171,13 +175,27 @@ def render_df(df,nrm = None):
         if nrm is not None:
             if hasattr(nrm, "center_"):
                 nrm.mean_ = nrm.center_
+        if tica_mdl and nrm:
+            output.append(create_feature(argument=feat_label,\
+                                             func=func,
+                                             label=label,
+                                             feature_mean = nrm.mean_[feature_index],
+                                             feature_scale = nrm.scale_[feature_index],
+                                             offset = tica_mdl.means_[feature_index]
+                                         ) +"\n")
+        elif nrm:
             output.append(create_feature(argument=feat_label,\
                                              func=func,
                                              label=label,
                                              feature_mean = nrm.mean_[feature_index],
                                              feature_scale = nrm.scale_[feature_index],
                                          ) +"\n")
-
+        elif tica_mdl:
+            output.append(create_feature(argument=feat_label,\
+                                             func=func,
+                                             label=label,
+                                             offset = tica_mdl.means_[feature_index]
+                                         ) +"\n")
         else:
             output.append(create_feature(argument=feat_label,\
                                              func=func,

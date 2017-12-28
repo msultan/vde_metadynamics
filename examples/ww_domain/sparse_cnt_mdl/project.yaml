@@ -1,0 +1,11 @@
+base_dir: /scratch/users/msultan/mutant_metadynamics/fip/data
+feature_dir: nrm_sparse_cnt_mdl
+mdl_dir: /scratch/users/msultan/mutant_metadynamics/fip/models/sparse_cnt_mdl
+mdl_params: {cluster__n_clusters: 200, msm__lag_time: 25, tica__kinetic_mapping: false,
+  tica__lag_time: 25, tica__n_components: 5, tica__rho: 0.001}
+project_dict:
+  fip: [fakeprj]
+  gtt: [fakeprj]
+protein_dir: protein_traj
+protein_list: [fip, gtt]
+series_name: ww_series

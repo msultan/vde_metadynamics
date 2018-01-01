@@ -1,4 +1,6 @@
 # Transferable Neural Networks + Molecular dynamics 
+![Folding Movie](https://github.com/msultan/vde_metadynamics/blob/master/examples/ww_domain/gtt75.gif)
+
 This repo contains information on how to run enhanced sampling simulations 
 for mutant proteins using time-lagged variational autoencoders (Variational dynamics encoders). 
 The idea is to run enhanced sampling simulations(such as metadynamics) using the latent

@@ -41,13 +41,16 @@ def render_print_val(arg,stride=1,file="CV"):
 def render_fc_layer(layer_indx, lp):
     output=[]
     for i in np.arange(lp.out_features):
-        if layer_indx==0:
+        if layer_indx==1:
             arg=','.join(["f%d_%d"%(layer_indx-1,j) for j in range(lp.in_features)])
         else:
             arg=','.join(["l%d_%d"%(layer_indx-1,j) for j in range(lp.in_features)])
 
         weights = ','.join(map(str,lp.weight[i].data.tolist()))
-        bias =','.join(map(str,lp.bias[i].data.tolist()))
+        try:
+            bias =','.join(map(str,lp.bias[i].data.tolist()))
+        except TypeError:
+            bias = str(lp.bias[i].data.tolist())
 
         # combine without bias
         non_bias_label = "l%d_%dnb"%(layer_indx, i)
